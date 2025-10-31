@@ -1,4 +1,6 @@
-# Welcome to Splatr!
+<img width="2000" height="500" alt="splatr_social_banner_1" src="https://github.com/user-attachments/assets/0c5d3e12-69af-4cdf-9c04-fafaa092371a" />
+
+# Welcome to Splatr
 
 Splatr was born out of many a late-night brainstorming sessions between a bunch of writers who wanted a way to share creativity with communities of artists while helping to ease the major headaches and complexities.
 
