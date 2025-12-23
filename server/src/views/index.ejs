@@ -1,0 +1,15 @@
+<html>
+  <meta charset="utf-8">
+  <link rel="icon" href="/static/assets/splatr_icon.svg"/>
+  <title>Welcome to Splatr</title>
+  <body>
+    <h1>
+      Welcome to Splatr<% if(user){%> <span><%=user.email%></span><%}%>!
+    </h1>
+    <% if(!user){ %>
+      <a href="/login">Login</a>
+    <% } else { %>
+      <a href="/logout">Logout</a>
+    <% } %>
+  </body>
+</html>
