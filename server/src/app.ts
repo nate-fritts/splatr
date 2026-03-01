@@ -108,7 +108,7 @@ App.use('*', setLocalVars);
 // ROUTES
 App.get('/', async (c) => {
   try {
-    const page = await ejs.renderFile(`${viewsRoot}/index.ejs`, {user:c.var.user ?? undefined, path:c.var.path});
+    const page = await ejs.renderFile(`${viewsRoot}/index.ejs`, c.var);
     return c.html(page, 200);
   } catch(e){
     throw e;

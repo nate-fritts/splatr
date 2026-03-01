@@ -1,8 +1,37 @@
-.profile-img {
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 50%;
-  height: 35px;
-  width: 35px;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+}
+
+p {
+  font-family: 'Noto Serif', 'Times New Roman', Times, serif;
+}
+
+.profile-box {
+  width: min-content;
+  font-size: .9rem;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template: 27px / 27px min-content;
+  grid-auto-flow: column;
+  column-gap: 10px;
+
+  .profile-img {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    height: 27px;
+    width: 27px;
+  }
+
+  &.left {
+    grid-template-columns: min-content 27px;
+
+    .profile-img {
+      grid-column: 2;
+    }
+  }
 }

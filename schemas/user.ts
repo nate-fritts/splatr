@@ -1,12 +1,6 @@
-import { Schema, Types, type Document } from 'mongoose';
-import { isEmail, isUrl } from '../utils/validators.ts';
-
-export interface ISplatrUser extends Document {
-  externalId: string;
-  email: string;
-  profile: URL['href'];
-  artist?: string;
-}
+import { Schema, Types } from 'mongoose';
+import type { ISplatrUser } from '../types/index.ts';
+import { isEmail, isUrl } from '../utils/index.ts';
 
 export const SplatrUserSchema = new Schema<ISplatrUser>({
   externalId: {

@@ -7,6 +7,17 @@
 		<link rel="stylesheet" href="/static/styles/console/index.css">
   </head>
 	<body>
-		<img src="<%=user.profile%>" class="profile-img"/>
+		<header>
+			<button id="user-dropdown-btn" class="profile-box left">
+				<img src="<%=user.profile%>" class="profile-img"/>
+				<span>
+					<% if(artist){ %>
+						<%=artist.display_name%>
+					<% } else { %>
+						<%=user.email%>
+					<%}%>
+				</span>
+			</button>
+		</header>
 	</body>
 </html>

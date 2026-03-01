@@ -1,7 +1,26 @@
 @import '../index.css';
 
-:root {}
-
 body {
   background-color: #e1d1bc;
+}
+
+header:first-of-type {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template: 45px / min-content;
+  align-items: center;
+  justify-content: end;
+
+  #user-dropdown-btn {
+    border-radius: 50px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px;
+    transition: all ease-in-out 400ms;
+    
+    &:hover {
+      background-color: #b5a1867a;
+    }
+  }
 }

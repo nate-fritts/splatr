@@ -7,6 +7,8 @@ export const addResponseMetadata = createMiddleware<{Variables:{metadata: ApiRes
   const metadata:ApiResponse['_metadata'] = {
     requestId: randomUUID(),
     requestTime: new Date(),
+    path: c.req.path,
+    method: c.req.method,
     actor: {
       ip: getConnInfo(c).remote.address
     }

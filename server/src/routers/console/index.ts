@@ -7,7 +7,7 @@ import { viewsRoot } from '../../app.ts';
 
 Console.get('/', (c)=>{
   try {
-    const html = ejs.renderFile(`${viewsRoot}/console/index.ejs`, {user:c.var.user, title:'Console'});
+    const html = ejs.renderFile(`${viewsRoot}/console/index.ejs`, {...c.var, title:'Console'});
     return c.html(html, 200);
   } catch(e){
     throw e;
