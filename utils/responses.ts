@@ -5,7 +5,7 @@ export const generateResponseMetadata = createMiddleware(async (c:Context, next:
   const _metadata = {
     timestamp: new Date().toISOString(),
     route: `${c.req.method.toUpperCase()} ${c.req.path.toLowerCase()}`,
-    userAgent: `${c.req.header('User-Agent')}`
+    user_agent: `${c.req.header('User-Agent')}`
   };
   c.set('responseMetadata', _metadata);
   await next();

@@ -8,19 +8,15 @@ Api.use(secureHeaders());
 Api.use(generateResponseMetadata);
 
 // CONNECT DB
-import { connect, model } from "mongoose";
+import { connect } from "mongoose";
 
 if(!Deno.env.get('DB_URI')) throw new Error('DB_URI is a required variable');
 const dbUri = new URL(Deno.env.get('DB_URI')!);
 await connect(dbUri.href);
 
-// LOAD DB MODELS
-import { ArtistSchema } from "../schemas/index.ts";
-export const Artist = model('Artist', ArtistSchema);
-
 // LOAD ROUTES
-import { Artist as ArtistRoutes } from "./routes/artist.ts";
-Api.route('/api/artist', ArtistRoutes);
+import { Artist as ArtistRoutes } from "./routes/artists.ts";
+Api.route('/artists', ArtistRoutes);
 
 // START API
 Deno.serve({
