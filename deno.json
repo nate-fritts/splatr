@@ -1,12 +1,12 @@
 {
+  "name": "@splatr-art/api",
   "fmt": {
     "singleQuote": true,
     "useBraces": "whenNotSingleLine",
     "useTabs": true
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-sys --allow-env --env-file=./server/.env ./server/index.ts",
-    "watch": "deno run --watch --allow-net --allow-read --allow-sys --allow-env --env-file=./server/.env ./server/index.ts",
+    "watch:api": "deno run --watch --allow-sys --allow-net --allow-read --allow-env --env-file=./api-server/.env ./api-server/index.ts",
     "test": ""
   },
   "imports": {
@@ -17,5 +17,10 @@
     "ejs": "npm:ejs@^3.1.10",
     "mongoose": "npm:mongoose@^9.0.1",
     "zod": "npm:zod@^4.1.13"
+  },
+  "exports": {
+    ".": "./mod.ts",
+    "./schemas": "./schemas/index.ts",
+    "./types": "./types/index.ts"
   }
 }
