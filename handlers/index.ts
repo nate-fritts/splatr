@@ -1,1 +1,1 @@
-export { createArtist } from "./artists.ts";
+export { createArtist, readArtistById, updateArtistById, deleteArtistById } from "./artists.ts";

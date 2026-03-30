@@ -6,6 +6,7 @@ export const ArtistSchema = new Schema<IArtist>({
   display_name: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator: (s) => (s.length >= 3 && s.length <= 32) ? true : false
     }

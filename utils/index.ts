@@ -1,2 +1,3 @@
-export { generateResponseMetadata } from "./responses.ts";
+export { generateArtistQuery } from "./queries.ts";
+export { generateResponseMetadata, generateResponseMetadataMiddleware } from "./responses.ts";
 export { isArtistDisplayName, isEmail, isUrl } from "./validators.ts";

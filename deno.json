@@ -5,10 +5,7 @@
     "useBraces": "whenNotSingleLine",
     "useTabs": true
   },
-  "tasks": {
-    "watch:api": "deno run --watch --allow-sys --allow-net --allow-read --allow-env --env-file=./api-server/.env ./api-server/index.ts",
-    "test": ""
-  },
+  "tasks": {},
   "imports": {
     "@hono": "jsr:@hono/hono@^4.10.7",
     "@panva/jose": "jsr:@panva/jose@^6.1.3",
