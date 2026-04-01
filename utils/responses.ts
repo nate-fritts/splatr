@@ -1,7 +1,8 @@
 import type { Context, Next } from "@hono";
 import { createMiddleware } from "@hono/factory";
 import { randomUUID } from "node:crypto";
-import type { ApiResponse } from '../types/responses.ts';
+import { MongooseError } from "mongoose";
+import type { ApiErrorResponse, ApiResponse } from '../types/responses.ts';
 
 export function generateResponseMetadata(c:Context):ApiResponse['_metadata']{
   return {
@@ -17,3 +18,9 @@ export const generateResponseMetadataMiddleware = createMiddleware(async (c:Cont
   c.set('responseMetadata', _metadata);
   await next();
 });
+
+export function handleApiError(c:Context, e:Error){
+  console.error(e);
+  const err = (e instanceof MongooseError) ? { name:'InvalidParameterError', message:'A required parameter is missing or invalid' } : <Error>e; // Resets raw database errors
+  return c.json<ApiErrorResponse>({_metadata:c.get('_metadata'), error: err}, 400);
+}

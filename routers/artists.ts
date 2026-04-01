@@ -1,32 +1,31 @@
 // Local imports
 import { createArtist, readArtistById, updateArtistById, deleteArtistById } from '../handlers/index.ts';
 import { ArtistModel } from "../models.ts";
-import type { IArtist } from '../types/index.ts';
-import { generateArtistQuery, generateResponseMetadata } from '../utils/index.ts';
-import type { ApiDataResponse, ApiErrorResponse } from '../types/index.ts';
+import type { ApiDataResponse, ApiErrorResponse, ApiResponse, IArtist } from '../types/index.ts';
+import { generateArtistQuery, generateResponseMetadata, handleApiError } from '../utils/index.ts';
 
 // Configure Router
 import { Hono, type Context, type Next } from "@hono";
 import { createMiddleware } from "@hono/factory";
 export const Artist = new Hono();
 
-// Configure DB
-import { MongooseError } from "mongoose";
+Artist.use(createMiddleware<{ Variables:{ _metadata:ApiResponse['_metadata'] }}>(async(c:Context, next:Next)=>{
+  c.set('_metadata', generateResponseMetadata(c));
+  await next();
+}));
 
 Artist.post('/', async (c:Context) => {
-  const _metadata = generateResponseMetadata(c);
   try {
     // Extract request parameters
-    const { display_name } = await c.req.json(),
+    const _metadata = c.get('_metadata'),
+          { display_name } = await c.req.json(),
           // Send to handler for validation and creation
           newArtist = await createArtist({display_name});
     
     return c.json<ApiDataResponse<IArtist>>({_metadata, data:newArtist.toJSON()}, 200);
   
   } catch(e){
-    console.error(e);
-    const err = (e instanceof MongooseError) ? { name:'InvalidParameterError', message:'A required parameter is missing or invalid' } : <Error>e; // Resets raw database errors
-    return c.json<ApiErrorResponse>({_metadata, error: err}, 400);
+    return handleApiError(c, <Error>e);
   }
 });
 
@@ -42,33 +41,40 @@ const queryArtist = createMiddleware<{ Variables:{ artist?:IArtist }}>(async (c:
 
 Artist.use('/:id', queryArtist);
 
-Artist.get('/:id', (c:Context)=>{
-  const _metadata = generateResponseMetadata(c);
+Artist.get('/:id', async (c:Context)=>{
   try {
-    // Extract from middleware
-    const artist = <IArtist>c.get('artist');
+    const _metadata = c.get('_metadata'),
+          { _id } = c.get('artist'),
+          artist = await readArtistById(_id);
+    if(!artist) return c.text('404 NOT FOUND', 404);
     return c.json<ApiDataResponse<IArtist>>({_metadata, data:artist.toJSON()});
   } catch(e){
-    console.error(e);
-    const err = (e instanceof MongooseError) ? { name:'InvalidParameterError', message:'A required parameter is missing or invalid' } : <Error>e; // Resets raw database errors
-    return c.json<ApiErrorResponse>({_metadata, error: err}, 400);
+    return handleApiError(c, <Error>e);
   }
 });
 
 Artist.patch('/:id', async (c:Context)=>{
-  const _metadata = generateResponseMetadata(c);
   try {
-    const { _id } = <IArtist>c.get('artist'),
+    const  _metadata = c.get('_metadata'),
+          { _id } = <IArtist>c.get('artist'),
           update = await c.req.json<Partial<IArtist>>();
 
     const updatedArtist = await updateArtistById(_id.toString(), update);
     return c.json<ApiDataResponse<IArtist>>({_metadata, data:updatedArtist.toJSON()}, 200);
 
   } catch(e){
-    console.error(e);
-    const err = (e instanceof MongooseError) ? { name:'InvalidParameterError', message:'A required parameter is missing or invalid' } : <Error>e; // Resets raw database errors
-    return c.json<ApiErrorResponse>({_metadata, error: err}, 400);
+    return handleApiError(c, <Error>e);
   }
 });
 
-Artist.delete('/:id', async (c:Context)=>{});
+Artist.delete('/:id', async (c:Context)=>{
+  try {
+    const _metadata = c.get('_metadata'),
+          { _id } = <IArtist>c.get('artist'),
+          deletedArtist = await deleteArtistById(_id.toString());
+
+    return c.json<ApiDataResponse<IArtist>>({_metadata, data:deletedArtist.toJSON()}, 200);
+  } catch(e){
+    return handleApiError(c, <Error>e);
+  }
+});

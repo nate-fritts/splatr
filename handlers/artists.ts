@@ -2,6 +2,7 @@ import { ArtistModel } from "../models.ts";
 import type { CreateArtistRequest } from '../types/index.ts';
 import { generateArtistQuery, isArtistDisplayName } from '../utils/index.ts';
 import type { IArtist } from '../types/artists.ts';
+import { isObjectIdOrHexString } from 'mongoose';
 
 export async function createArtist(request:CreateArtistRequest){
   const { display_name } = request;
@@ -81,4 +82,21 @@ export async function updateArtistById(id:string, request:Partial<IArtist>){
   return updatedArtist;
 }
 
-export async function deleteArtistById(id:string){}
+export async function deleteArtistById(id:string){
+  if(!id || (!isObjectIdOrHexString(id) && !isArtistDisplayName(id))){
+    const err = new Error();
+    err.name = 'InvalidParameterError';
+    err.message = 'id is not provided or is invalid';
+    throw err;
+  }
+  const deletedArtist = await ArtistModel.findByIdAndDelete(id);
+
+  if(!deletedArtist){
+    const err = new Error();
+    err.name = 'UnspecifiedError';
+    err.message = 'There was an error processing your request.';
+    throw err;
+  }
+
+  return deletedArtist;
+}
