@@ -1,6 +1,6 @@
 import type { UUID } from 'node:crypto';
 
-import type { IArtist } from "./index.ts";
+import type { ISplatrArtist } from "./index.ts";
 
 export interface ApiResponse {
   _metadata: {
@@ -23,6 +23,6 @@ export interface ApiErrorResponse<E = Error> extends ApiResponse {
 }
 
 export interface LocalVars {
-  artist: IArtist;
+  artist: ISplatrArtist;
   path: string;
 };

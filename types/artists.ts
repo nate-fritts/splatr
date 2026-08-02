@@ -1,6 +1,6 @@
 import type { Document } from "mongoose";
 
-export interface IArtist extends Document {
+export interface ISplatrArtist extends Document {
   active: boolean;
   display_name: string;
 }

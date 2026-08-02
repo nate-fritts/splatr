@@ -1,10 +1,10 @@
 import { ArtistModel } from "../models.ts";
 import type { CreateArtistRequest } from '../types/index.ts';
 import { generateArtistQuery, isArtistDisplayName } from '../utils/index.ts';
-import type { IArtist } from '../types/artists.ts';
+import type { ISplatrArtist } from '../types/artists.ts';
 import { isObjectIdOrHexString } from 'mongoose';
 
-export async function createArtist(request:CreateArtistRequest){
+export async function createArtist(request:CreateArtistRequest):Promise<ISplatrArtist>{
   const { display_name } = request;
   
   // display_name validation
@@ -25,14 +25,14 @@ export async function createArtist(request:CreateArtistRequest){
   return await ArtistModel.create({display_name:display_name.toLowerCase()});
 }
 
-export async function readArtistById(id:string){
+export async function readArtistById(id:string):Promise<ISplatrArtist|null>{
   const query = generateArtistQuery(id);
   return await ArtistModel.findOne(query);
 }
 
-export async function updateArtistById(id:string, request:Partial<IArtist>){
+export async function updateArtistById(id:string, request:Partial<ISplatrArtist>):Promise<ISplatrArtist>{
   const { active, display_name } = request,
-        update:Partial<IArtist> = {},
+        update:Partial<ISplatrArtist> = {},
         target = await readArtistById(id);
 
   let updateFlag = false;
@@ -82,7 +82,7 @@ export async function updateArtistById(id:string, request:Partial<IArtist>){
   return updatedArtist;
 }
 
-export async function deleteArtistById(id:string){
+export async function deleteArtistById(id:string):Promise<ISplatrArtist>{
   if(!id || (!isObjectIdOrHexString(id) && !isArtistDisplayName(id))){
     const err = new Error();
     err.name = 'InvalidParameterError';

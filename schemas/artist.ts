@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
-import type { IArtist } from '../types/index.ts';
+import type { ISplatrArtist } from '../types/index.ts';
 
-export const ArtistSchema = new Schema<IArtist>({
+export const ArtistSchema:Schema<ISplatrArtist> = new Schema<ISplatrArtist>({
   active: { type: Boolean, default:true, required:true },
   display_name: {
     type: String,
