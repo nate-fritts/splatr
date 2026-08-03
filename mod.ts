@@ -5,4 +5,4 @@ export {
 
 export { ArtistRoutes } from "./routers/index.ts";
 export { ArtistSchema } from "./schemas/index.ts";
-export type { IArtist } from "./types/index.ts";
+export type { ISplatrArtist } from "./types/index.ts";
