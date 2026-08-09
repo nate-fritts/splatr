@@ -1,4 +1,5 @@
 import type { UUID } from 'node:crypto';
+import { IArtist, TimestampedDocument } from "@splatr/core";
 
 export interface ApiResponse {
   _metadata: {
@@ -16,4 +17,5 @@ export type ApiDataResponse<D> = ApiResponse & { data: D };
 export type ApiErrorResponse<E = Error> = ApiResponse & { error: E };
 
 // ARTISTS
-export type CreateArtistRequest = { display_name:string };
+export type UpdateArtistRequest = Omit<IArtist, keyof TimestampedDocument>
+export type CreateArtistRequest = Omit<UpdateArtistRequest, "active" | "offers" >;

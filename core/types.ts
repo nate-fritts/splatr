@@ -15,12 +15,14 @@ export interface TimestampedDocument extends Document {
 export interface IArtist extends TimestampedDocument {
   active: boolean;
   display_name: string;
+  description?: string;
   offers: ReferencedDoc<IOffer>[];
 }
 
 export interface IOffer extends TimestampedDocument {
   active: boolean;
   name: string;
+  description?: string;
   value: number;
   /**
    * Lowercase representation of the [ISO-4217](https://en.wikipedia.org/wiki/ISO_4217#Active_codes_(list_one)) currency code.

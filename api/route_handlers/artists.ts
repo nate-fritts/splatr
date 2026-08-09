@@ -10,7 +10,7 @@ export async function postArtist(c:Context){
 
     if(!request) throw new Error('requestBody is required on this route.');
 
-    const { display_name } = request;
+    const { display_name, description } = request;
 
     // display_name validation
     if(!display_name || !isArtistDisplayName(display_name.toLowerCase())){
@@ -25,7 +25,11 @@ export async function postArtist(c:Context){
       throw err;
     };
 
-    const newArtist = await MArtist.create({display_name:display_name.toLowerCase()});
+    const artistRequest:Partial<CreateArtistRequest> = { display_name:display_name.toLowerCase() };
+
+    if(description) artistRequest.description = description;
+
+    const newArtist = await MArtist.create(artistRequest);
 
     if(!newArtist){
       const err = new Error('There was an error creating a new SArtist document.');
