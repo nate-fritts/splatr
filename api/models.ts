@@ -1,11 +1,11 @@
-import { SSplatrArtist, type ISplatrArtist } from "@splatr/core";
+import { SArtist, type IArtist } from "@splatr/core";
 
 import { model, type Model } from "mongoose";
 
-export let MSplatrArtist:Model<ISplatrArtist>;
+export let MArtist:Model<IArtist>;
 
 try {
-  MSplatrArtist = model<ISplatrArtist>('SplatrArtist');
+  MArtist = model<IArtist>('artist');
 } catch {
-  MSplatrArtist = model<ISplatrArtist>('SplatrArtist', SSplatrArtist);
+  MArtist = model<IArtist>('artist', SArtist);
 }

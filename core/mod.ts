@@ -1,8 +1,16 @@
 export {
-  SSplatrArtist
+  SArtist
 } from "./schemas.ts";
 
 export type {
-  ISplatrArtist,
+  IArtist,
   ReferencedDoc
 } from "./types.ts";
+
+export {
+  generateArtistQuery,
+  isArtistDisplayName,
+  isPopulated,
+  isEmail,
+  isUrl
+} from "./utils/index.ts";
