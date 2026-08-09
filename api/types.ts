@@ -14,3 +14,6 @@ export interface ApiResponse {
 
 export type ApiDataResponse<D> = ApiResponse & { data: D };
 export type ApiErrorResponse<E = Error> = ApiResponse & { error: E };
+
+// ARTISTS
+export type CreateArtistRequest = { display_name:string };

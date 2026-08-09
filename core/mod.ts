@@ -4,7 +4,10 @@ export {
 
 export type {
   IArtist,
-  ReferencedDoc
+  IOffer,
+  ReducedDoc,
+  ReferencedDoc,
+  TimestampedDocument
 } from "./types.ts";
 
 export {

@@ -4,10 +4,9 @@ import { secureHeaders } from "@hono/secure-headers";
 const Api = new Hono();
 Api.use(secureHeaders());
 
-import type { ApiResponse } from "./types.ts";
-import { generateResponseMetadata } from "./utils.ts";
-
-Api.all('/', c => c.json<ApiResponse>({ _metadata:generateResponseMetadata(c) }));
+// ARTISTS
+import { postArtist } from "./route_handlers/artists.ts";
+Api.post('/artists', postArtist);
 
 import mongoose, {} from "mongoose";
 
