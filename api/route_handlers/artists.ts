@@ -27,7 +27,7 @@ export async function postArtist(c:Context){
 
     const artistRequest:Partial<CreateArtistRequest> = { display_name:display_name.toLowerCase() };
 
-    if(description) artistRequest.description = description;
+    if(description) artistRequest.description = description.substring(0, 1023);
 
     const newArtist = await MArtist.create(artistRequest);
 

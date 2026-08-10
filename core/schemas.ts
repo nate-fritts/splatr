@@ -13,7 +13,7 @@ export const SArtist = new Schema<IArtist>({
 export const SOffer = new Schema<IOffer>({
   active: { type:Boolean, required:true, default:true },
   name: { type:String, required:true, minLength:6, maxLength:64 },
-  description: { type:String, required:true, minLength:4, maxLength:1024 },
+  description: { type:String, required:true, maxLength:512 },
   value: { type:Number, required:true, min:100, max:1000000 },
   currency: { type:String, minLength:3, maxLength: 3, lowercase:true }
 }, options);
