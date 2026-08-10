@@ -2,7 +2,9 @@ import { IArtist, isArtistDisplayName } from "@splatr/core";
 import { MArtist } from "../models.ts";
 import { ApiDataResponse, type CreateArtistRequest } from "../types.ts";
 import { generateResponseMetadata, handleApiError, sortDocument } from "../utils.ts";
+
 import type { Context } from "@hono";
+import { isObjectIdOrHexString } from "mongoose";
 
 export async function postArtist(c:Context){
   try {
@@ -38,6 +40,29 @@ export async function postArtist(c:Context){
     }
 
     return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(newArtist) });
+
+  } catch(e){
+    return handleApiError(c, e);
+  }
+}
+
+export async function getArtistById(c:Context){
+  try {
+    const { artistId } = c.req.param();
+
+    if(!artistId || !isObjectIdOrHexString(artistId)){
+      const err = new Error('artistId is missing or invalid.');
+      err.name = 'InvalidParameterError';
+      throw err;
+    }
+
+    const foundArtist = await MArtist.findById(artistId);
+
+    console.dir(foundArtist);
+
+    if(!foundArtist) return c.text('404 NOT FOUND', 404);
+
+    return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(foundArtist)});
 
   } catch(e){
     return handleApiError(c, e);

@@ -5,8 +5,10 @@ const Api = new Hono();
 Api.use(secureHeaders());
 
 // ARTISTS
-import { postArtist } from "./route_handlers/artists.ts";
+import { postArtist, getArtistById } from "./route_handlers/artists.ts";
+
 Api.post('/artists', postArtist);
+Api.get('/artists/:artistId', getArtistById);
 
 import mongoose, {} from "mongoose";
 
