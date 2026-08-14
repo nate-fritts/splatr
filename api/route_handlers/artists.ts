@@ -1,6 +1,6 @@
 import { IArtist, isArtistDisplayName } from "@splatr/core";
 import { MArtist } from "../models.ts";
-import { ApiDataResponse, type CreateArtistRequest } from "../types.ts";
+import { ApiDataResponse, ApiResponse, type CreateArtistRequest } from "../types.ts";
 import { generateResponseMetadata, handleApiError, sortDocument } from "../utils.ts";
 
 import type { Context } from "@hono";
@@ -58,13 +58,42 @@ export async function getArtistById(c:Context){
 
     const foundArtist = await MArtist.findById(artistId);
 
-    console.dir(foundArtist);
-
     if(!foundArtist) return c.text('404 NOT FOUND', 404);
 
     return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(foundArtist)});
 
   } catch(e){
+    return handleApiError(c, e);
+  }
+}
+
+export async function deleteArtistById(c:Context){
+  try {
+    const { artistId } = c.req.param();
+
+    if(!artistId || !isObjectIdOrHexString(artistId)){
+      const err = new Error('artistId is missing or invalid.');
+      err.name = 'InvalidParameterError';
+      throw err;
+    }
+
+    const targetArtist = await MArtist.findById(artistId);
+
+    if(!targetArtist) return c.text('404 NOT FOUND', 404);
+
+    const deletedArtist = await MArtist.findByIdAndDelete(targetArtist._id);
+
+    if(!deletedArtist){
+      const err = new Error(`There was an error deleting the artist with id ${targetArtist._id}`);
+      err.name = 'UnspecifiedMongoError';
+      throw err;
+    }
+
+    // TODO: Decide how to handle DELETE operations and the metadata from them
+    console.dir(generateResponseMetadata(c));
+
+    return c.body(null, 204);
+  } catch(e) {
     return handleApiError(c, e);
   }
 }

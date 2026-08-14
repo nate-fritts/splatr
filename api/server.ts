@@ -5,10 +5,11 @@ const Api = new Hono();
 Api.use(secureHeaders());
 
 // ARTISTS
-import { postArtist, getArtistById } from "./route_handlers/artists.ts";
+import { postArtist, getArtistById, deleteArtistById } from "./route_handlers/artists.ts";
 
 Api.post('/artists', postArtist);
 Api.get('/artists/:artistId', getArtistById);
+Api.delete('/artists/:artistId', deleteArtistById);
 
 import mongoose, {} from "mongoose";
 
@@ -16,8 +17,6 @@ try {
   // Initialize MongoDB connection with mongoose
   const { href } = new URL(Deno.env.get('API_DB_URL')!);
   await mongoose.connect(href);
-
-  console.log(mongoose.connections[0].modelNames());
 
   Deno.serve({
     handler: Api.fetch,
