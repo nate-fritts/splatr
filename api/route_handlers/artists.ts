@@ -1,10 +1,9 @@
 import { IArtist, isArtistDisplayName } from "@splatr/core";
 import { MArtist } from "../models.ts";
-import { ApiDataResponse, ApiResponse, type CreateArtistRequest } from "../types.ts";
+import type { UpdateArtistRequest, ApiDataResponse, ApiVariables, CreateArtistRequest } from "../types.ts";
 import { generateResponseMetadata, handleApiError, sortDocument } from "../utils.ts";
 
 import type { Context } from "@hono";
-import { isObjectIdOrHexString } from "mongoose";
 
 export async function postArtist(c:Context){
   try {
@@ -46,38 +45,69 @@ export async function postArtist(c:Context){
   }
 }
 
-export async function getArtistById(c:Context){
-  try {
-    const { artistId } = c.req.param();
+export function getArtistById(c:Context<{Variables:ApiVariables}>){
+  return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(c.get('artist'))});
+}
 
-    if(!artistId || !isObjectIdOrHexString(artistId)){
-      const err = new Error('artistId is missing or invalid.');
+export async function patchArtistById(c:Context<{Variables:ApiVariables}>){
+  try {
+    const { active, display_name, offers } = await c.req.json<UpdateArtistRequest>(),
+          targetArtist = c.get('artist'),
+          updateRequest:Partial<IArtist> = {};
+
+    let updateFlag = false;
+
+    if(typeof active === 'boolean' && targetArtist.active !== active){
+      updateRequest.active = active;
+      updateFlag = true;
+    }
+
+    if(display_name && targetArtist.display_name !== display_name){
+      if(typeof display_name !== 'string' || !isArtistDisplayName(display_name)){
+        const err = new Error(`request.display_name is invalid.`);
+        err.name = 'InvalidParameterError';
+        throw err;
+      }
+
+      const existingArtists = await MArtist.find({display_name});
+      if(existingArtists.length !== 0){
+        const err = new Error(`An artist with display_name ${display_name} already exists.`);
+        err.name = 'InvalidParameterError';
+        throw err;
+      }
+
+      updateRequest.display_name = display_name;
+      updateFlag = true;
+    }
+
+    if(offers){
+      // TODO ADD OFFERS LOGIC
+    }
+
+    if(!updateFlag){
+      const err = new Error('No parameters to update.');
       err.name = 'InvalidParameterError';
       throw err;
     }
 
-    const foundArtist = await MArtist.findById(artistId);
+    const updatedArtist = await MArtist.findByIdAndUpdate(targetArtist._id, updateRequest, { returnDocument:'after' });
 
-    if(!foundArtist) return c.text('404 NOT FOUND', 404);
+    if(!updatedArtist){
+      const err = new Error(`There was a problem updating the artist with _id ${targetArtist._id}`);
+      err.name = 'UnspecifiedMongoError';
+      throw err;
+    }
 
-    return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(foundArtist)});
+    return c.json<ApiDataResponse<IArtist>>({_metadata:generateResponseMetadata(c), data:sortDocument(updatedArtist)});
 
   } catch(e){
     return handleApiError(c, e);
   }
 }
 
-export async function deleteArtistById(c:Context){
+export async function deleteArtistById(c:Context<{Variables:ApiVariables}>){
   try {
-    const { artistId } = c.req.param();
-
-    if(!artistId || !isObjectIdOrHexString(artistId)){
-      const err = new Error('artistId is missing or invalid.');
-      err.name = 'InvalidParameterError';
-      throw err;
-    }
-
-    const targetArtist = await MArtist.findById(artistId);
+    const targetArtist = c.get('artist');
 
     if(!targetArtist) return c.text('404 NOT FOUND', 404);
 

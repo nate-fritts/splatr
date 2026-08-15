@@ -1,14 +1,19 @@
+import { IArtist } from "@splatr/core";
+
 import { Hono } from "@hono";
 import { secureHeaders } from "@hono/secure-headers";
 
-const Api = new Hono();
+const Api = new Hono<{Variables:{ artist?:IArtist }}>();
 Api.use(secureHeaders());
 
 // ARTISTS
-import { postArtist, getArtistById, deleteArtistById } from "./route_handlers/artists.ts";
+import { postArtist, getArtistById, deleteArtistById, patchArtistById } from "./route_handlers/artists.ts";
+import { setArtistVar } from "./middleware.ts";
 
 Api.post('/artists', postArtist);
+Api.use('/artists/:artistId', setArtistVar);
 Api.get('/artists/:artistId', getArtistById);
+Api.patch('/artists/:artistId', patchArtistById);
 Api.delete('/artists/:artistId', deleteArtistById);
 
 import mongoose, {} from "mongoose";

@@ -16,6 +16,8 @@ export interface ApiResponse {
 export type ApiDataResponse<D> = ApiResponse & { data: D };
 export type ApiErrorResponse<E = Error> = ApiResponse & { error: E };
 
+export type ApiVariables = { artist:IArtist };
+
 // ARTISTS
 export type UpdateArtistRequest = Omit<IArtist, keyof TimestampedDocument>
 export type CreateArtistRequest = Omit<UpdateArtistRequest, "active" | "offers" >;
