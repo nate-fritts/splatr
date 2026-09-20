@@ -1,31 +1,36 @@
-import { type Document, Types } from "mongoose";
+import type { Document } from "mongoose";
 
-/**
- * A Mongoose {@link Document} with the methods and other metadata removed, except for `_id`, `createdAt`, `updatedAt`, or `__v`
- */
-export type ReducedDoc<T extends TimestampedDocument> = T & Required<{ _id:Types.ObjectId }>;
+// GENERAL
 
-export type ReferencedDoc<T extends TimestampedDocument> = T["_id"] | T | string;
+export type ArrayMode = typeof ARRAY_MODES[number];
+
+// MONGOOSE
+
+export type ReferencedDocument<T extends TimestampedDocument> = T["_id"] | T | string;
 
 export interface TimestampedDocument extends Document {
   created_at: Temporal.PlainDateTimeLike;
   updated_at: Temporal.PlainDateTimeLike;
 }
 
-export interface IArtist extends TimestampedDocument {
-  active: boolean;
-  display_name: string;
-  description?: string;
-  offers: ReferencedDoc<IOffer>[];
+// RESPONSES
+
+import type { UUID } from "node:crypto";
+import { ARRAY_MODES } from "@/data.ts";
+
+export interface ApiResponse {
+  _metadata: {
+    request_id: UUID;
+    request_time: Temporal.PlainDateTimeLike;
+    route: string;
+    user_agent: string;
+    actor?: {
+      id: string;
+      scope_matched: string;
+      ip?: string;
+    }
+  }
 }
 
-export interface IOffer extends TimestampedDocument {
-  active: boolean;
-  name: string;
-  description?: string;
-  value: number;
-  /**
-   * Lowercase representation of the [ISO-4217](https://en.wikipedia.org/wiki/ISO_4217#Active_codes_(list_one)) currency code.
-   */
-  currency: string;
-}
+export type ApiDataResponse<D> = ApiResponse & { data: D };
+export type ApiErrorResponse<E = Error> = ApiResponse & { error: E };

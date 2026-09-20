@@ -1,14 +1,5 @@
-export {
-  SArtist
-} from "./schemas.ts";
-
-export type {
-  IArtist,
-  IOffer,
-  ReducedDoc,
-  ReferencedDoc,
-  TimestampedDocument
-} from "./types.ts";
+export type { Artist } from "@/resources/artist.ts";
+export type { ArtistOffer } from "@/resources/artistOffer.ts";
 
 export {
   generateArtistQuery,
