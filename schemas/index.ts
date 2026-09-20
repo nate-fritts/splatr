@@ -1,1 +1,0 @@
-export { ArtistSchema } from "./artist.ts";

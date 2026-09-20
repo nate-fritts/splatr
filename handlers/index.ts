@@ -1,1 +1,0 @@
-export { createArtist, readArtistById, updateArtistById, deleteArtistById } from "./artists.ts";

@@ -1,11 +1,14 @@
-import { IArtist, isArtistDisplayName } from "@splatr/core";
-import { MArtist } from "../models.ts";
-import type { UpdateArtistRequest, ApiDataResponse, ApiVariables, CreateArtistRequest } from "../types.ts";
-import { generateResponseMetadata, handleApiError, sortDocument } from "../utils.ts";
+import { MArtist } from "@/models.ts";
+import type { ApiVariables } from "@/types.ts";
+import { generateResponseMetadata, handleApiError, sortDocument } from "@/utils.ts";
+
+import { isArtistDisplayName, ARRAY_MODES } from "@splatr/core";
+import type { ApiDataResponse, Artist, CreateArtistRequest, UpdateArtistRequest } from "@splatr/core";
 
 import type { Context } from "@hono";
+import { isObjectIdOrHexString } from "mongoose";
 
-export async function postArtist(c:Context){
+export const postArtist = async (c:Context<{Variables:ApiVariables}>) => {
   try {
     const request = await c.req.json<CreateArtistRequest>();
 
@@ -38,22 +41,24 @@ export async function postArtist(c:Context){
       throw err;
     }
 
-    return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(newArtist) });
+    return c.json<ApiDataResponse<Artist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<Artist>(newArtist) });
 
   } catch(e){
     return handleApiError(c, e);
   }
+};
+
+export const getArtistById = async (c:Context<{Variables:ApiVariables}>) => {
+  // TODO
 }
 
-export function getArtistById(c:Context<{Variables:ApiVariables}>){
-  return c.json<ApiDataResponse<IArtist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<IArtist>(c.get('artist'))});
-}
-
-export async function patchArtistById(c:Context<{Variables:ApiVariables}>){
+export const patchArtistById = async (c:Context<{Variables:ApiVariables}>) => {
   try {
-    const { active, display_name, offers } = await c.req.json<UpdateArtistRequest>(),
+    const { active, display_name, offers, offers_mode } = await c.req.json<UpdateArtistRequest>(),
+          { allowEmptyOffers } = c.req.query(),
           targetArtist = c.get('artist'),
-          updateRequest:Partial<IArtist> = {};
+          updateRequest:Partial<Artist> = {},
+          offerMode = (offers_mode) && ARRAY_MODES.includes(offers_mode) ? offers_mode : 'merge';
 
     let updateFlag = false;
 
@@ -80,8 +85,10 @@ export async function patchArtistById(c:Context<{Variables:ApiVariables}>){
       updateFlag = true;
     }
 
-    if(offers){
+    if(offers && Array.isArray(offers) && (offers.length > 0 && offers.every(o => isObjectIdOrHexString(o)) || (allowEmptyOffers === 'true' && offers.length === 0))){
       // TODO ADD OFFERS LOGIC
+      updateRequest.offers = offers;
+      updateFlag = true;
     }
 
     if(!updateFlag){
@@ -98,14 +105,14 @@ export async function patchArtistById(c:Context<{Variables:ApiVariables}>){
       throw err;
     }
 
-    return c.json<ApiDataResponse<IArtist>>({_metadata:generateResponseMetadata(c), data:sortDocument(updatedArtist)});
+    return c.json<ApiDataResponse<Artist>>({_metadata:generateResponseMetadata(c), data:sortDocument(updatedArtist)});
 
   } catch(e){
     return handleApiError(c, e);
   }
 }
 
-export async function deleteArtistById(c:Context<{Variables:ApiVariables}>){
+export const deleteArtistById = async (c:Context<{Variables:ApiVariables}>) => {
   try {
     const targetArtist = c.get('artist');
 

@@ -1,1 +1,0 @@
-export { Artist as ArtistRoutes } from "./artists.ts";

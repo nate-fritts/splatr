@@ -9,11 +9,12 @@
     "watch": "deno run --watch --allow-env --env-file=./api/.env --allow-net --allow-read --allow-sys ./api/server.ts"
   },
   "imports": {
-    "@hono": "jsr:@hono/hono@^4.13.1",
+    "@helpers": "../helpers/mod.ts",
+    "@hono": "jsr:@hono/hono@^4.13.8",
     "@splatr/core": "./core/mod.ts",
     "@std/assert": "jsr:@std/assert@^1.0.19",
-    "mongoose": "npm:mongoose@^9.9.1",
-    "zod": "npm:zod@^4.4.3"
+    "mongoose": "npm:mongoose@^9.10.1",
+    "zod": "npm:zod@^4.6.5"
   },
   "exports": {
     ".": "./mod.ts",
