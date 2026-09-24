@@ -4,17 +4,6 @@ import { secureHeaders } from "@hono/secure-headers";
 const Api = new Hono<{ Variables:ApiVariables }>();
 Api.use(secureHeaders());
 
-// ARTISTS
-import { postArtist, getArtistById, deleteArtistById, patchArtistById } from "./route_handlers/artists.ts";
-import { setArtistVar } from "./middleware.ts";
-
-Api.post('/artists', postArtist);
-
-Api.use('/artists/:artistId', setArtistVar);
-Api.get('/artists/:artistId', getArtistById);
-Api.patch('/artists/:artistId', patchArtistById);
-Api.delete('/artists/:artistId', deleteArtistById);
-
 import mongoose, {} from "mongoose";
 import { ApiVariables } from "@/types.ts";
 
@@ -36,3 +25,7 @@ try {
   console.error(e);
   Deno.exit(1);
 }
+
+import { ArtistRoutes } from "@/routers/artists.ts";
+
+Api.route('/artists', ArtistRoutes);
