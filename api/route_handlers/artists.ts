@@ -1,8 +1,8 @@
 import { MArtist } from "@/models.ts";
 import type { ApiVariables } from "@/types.ts";
-import { generateResponseMetadata, handleApiError, sortDocument } from "@/utils.ts";
+import { generateResponseMetadata, handleApiError } from "@/utils.ts";
 
-import { isArtistDisplayName, ARRAY_MODES } from "@splatr/core";
+import { isArtistDisplayName, ARRAY_MODES, DArtist } from "@splatr/core";
 import type { ApiDataResponse, Artist, CreateArtistRequest, UpdateArtistRequest } from "@splatr/core";
 
 import type { Context } from "@hono";
@@ -41,15 +41,21 @@ export const postArtist = async (c:Context<{Variables:ApiVariables}>) => {
       throw err;
     }
 
-    return c.json<ApiDataResponse<Artist>>({ _metadata:generateResponseMetadata(c), data:sortDocument<Artist>(newArtist) });
+    return c.json<ApiDataResponse<Artist>>({ _metadata:generateResponseMetadata(c), data:newArtist });
 
   } catch(e){
     return handleApiError(c, e);
   }
 };
 
-export const getArtistById = async (c:Context<{Variables:ApiVariables}>) => {
-  // TODO
+export const getArtistById = (c:Context<{Variables:ApiVariables}>) => {
+  try {
+    const targetArtist = c.get('artist');
+
+    return c.json<ApiDataResponse<DArtist>>({ _metadata:generateResponseMetadata(c), data:targetArtist });
+  } catch(e) {
+    return handleApiError(c, e);
+  }
 }
 
 export const patchArtistById = async (c:Context<{Variables:ApiVariables}>) => {
@@ -105,7 +111,7 @@ export const patchArtistById = async (c:Context<{Variables:ApiVariables}>) => {
       throw err;
     }
 
-    return c.json<ApiDataResponse<Artist>>({_metadata:generateResponseMetadata(c), data:sortDocument(updatedArtist)});
+    return c.json<ApiDataResponse<Artist>>({_metadata:generateResponseMetadata(c), data: updatedArtist});
 
   } catch(e){
     return handleApiError(c, e);
@@ -115,8 +121,6 @@ export const patchArtistById = async (c:Context<{Variables:ApiVariables}>) => {
 export const deleteArtistById = async (c:Context<{Variables:ApiVariables}>) => {
   try {
     const targetArtist = c.get('artist');
-
-    if(!targetArtist) return c.text('404 NOT FOUND', 404);
 
     const deletedArtist = await MArtist.findByIdAndDelete(targetArtist._id);
 

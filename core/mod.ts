@@ -1,6 +1,6 @@
 export { ACCESS_SCOPE_ACTIONS, ARRAY_MODES } from "@/data.ts";
 
-export type { Artist, CreateArtistRequest, UpdateArtistRequest } from "@/resources/artist.ts";
+export type { Artist, DArtist, CreateArtistRequest, UpdateArtistRequest } from "@/resources/artist.ts";
 export { SArtist } from "@/resources/artist.ts";
 
 export type { ArtistOffer } from "@/resources/artistOffer.ts";
@@ -8,8 +8,10 @@ export { SArtistOffer } from "@/resources/artistOffer.ts";
 
 export type {
   ArrayMode,
+  ApiResponse,
   ApiDataResponse,
-  ApiErrorResponse
+  ApiErrorResponse,
+  TimestampedDocument
 } from "@/types.ts";
 
 export {

@@ -1,4 +1,3 @@
-import { IArtist, TimestampedDocument } from "@splatr/core";
-import type { ArrayMode } from "@helpers";
+import { DArtist } from "@splatr/core";
 
-export type ApiVariables = { artist:IArtist };
+export type ApiVariables = { artist:DArtist };
