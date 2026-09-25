@@ -138,3 +138,11 @@ export const deleteArtistById = async (c:Context<{Variables:ApiVariables}>) => {
     return handleApiError(c, e);
   }
 }
+
+export const postArtistOffer = async () => {};
+
+export const getArtistOfferById = async () => {};
+
+export const patchArtistOfferById = async () => {};
+
+export const deleteArtistOfferById = async () => {};

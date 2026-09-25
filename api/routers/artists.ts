@@ -3,8 +3,7 @@ import { Hono } from "@hono";
 export const ArtistRoutes = new Hono();
 
 // ARTISTS
-import { postArtist, getArtistById, deleteArtistById, patchArtistById } from "@/route_handlers/artists.ts";
-import { getArtistOfferById, postArtistOffer, patchArtistOfferById, deleteArtistOfferById } from "@/route_handlers/artistOffers.ts";
+import { postArtist, getArtistById, deleteArtistById, patchArtistById, getArtistOfferById, postArtistOffer, patchArtistOfferById, deleteArtistOfferById } from "@/route_handlers/artists.ts";
 
 ArtistRoutes.post('/', postArtist);
 
